@@ -28,5 +28,6 @@ let
     InsertFiscalPriorPeriodYearNumber = Table.AddColumn(InsertFiscalPQDate, "FiscalPriorPeriodYearNumber", each Date.Year([FiscalPPDate]), Int64.Type),
     InsertMonthYear = Table.AddColumn(InsertFiscalPriorPeriodYearNumber, "MonthYear", each Text.Start(Date.MonthName([CalendarDate]),3) & "-" & Text.End(Text.From(Date.Year([CalendarDate])),2)),
     InsertYearQuarter = Table.AddColumn(InsertMonthYear, "YearQuarter", each Text.From(Date.Year([CalendarDate])) & "-Q" & Text.From(Date.QuarterOfYear([CalendarDate])))
+	InsertJDEJulianDate = Table.AddColumn(InsertYearQuarter, "JDEJulianDate", each (Date.Year([CalendarDate]) - 1900) * 1000 + [CalendarDate] - Date.From(Date.StartOfYear([CalendarDate])) + 1, Int64.Type)
 in
-    InsertYearQuarter
+    InsertJDEJulianDate
