@@ -26,9 +26,7 @@ let
     InsertFiscalPPDate = Table.AddColumn(InsertPeriodNum, "FiscalPPDate", each Date.AddMonths([CalendarDate], -1), Date.Type),
     InsertFiscalPQDate = Table.AddColumn(InsertFiscalPPDate, "FiscalPQDate", each Date.AddQuarters([CalendarDate], -1), Date.Type),
     InsertFiscalPriorPeriodYearNumber = Table.AddColumn(InsertFiscalPQDate, "FiscalPriorPeriodYearNumber", each Date.Year([FiscalPPDate]), Int64.Type),
-    #"Changed Type" = Table.TransformColumnTypes(InsertFiscalPriorPeriodYearNumber,{{"CalendarDate", type date}}),
-    #"Added Custom" = Table.AddColumn(#"Changed Type", "Custom", each Text.Start(Date.MonthName([CalendarDate]),3) & " " & Text.End(Text.From(Date.Year([CalendarDate])),2)),
-    #"Renamed Columns" = Table.RenameColumns(#"Added Custom",{{"Custom", "mmm yy"}}),
-    #"Changed Type1" = Table.TransformColumnTypes(#"Renamed Columns",{{"mmm yy", type date}})
+    InsertMonthYear = Table.AddColumn(InsertFiscalPriorPeriodYearNumber, "MonthYear", each Text.Start(Date.MonthName([CalendarDate]),3) & "-" & Text.End(Text.From(Date.Year([CalendarDate])),2)),
+    InsertYearQuarter = Table.AddColumn(InsertMonthYear, "YearQuarter", each Text.From(Date.Year([CalendarDate])) & "-Q" & Text.From(Date.QuarterOfYear([CalendarDate])))
 in
-    #"Changed Type1"
+    InsertYearQuarter
